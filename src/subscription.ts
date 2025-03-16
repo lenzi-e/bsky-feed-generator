@@ -4,6 +4,8 @@ import {
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
 
+const ESPRESSO_TERMS = ['espresso', 'doppio', 'double shot']
+
 export class FirehoseSubscription extends FirehoseSubscriptionBase {
   async handleEvent(evt: RepoEvent) {
     if (!isCommit(evt)) return
@@ -21,7 +23,8 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const postsToCreate = ops.posts.creates
       .filter((create) => {
         // only espresso-related posts
-        create.record.text.toLowerCase().includes('espresso')
+        const text = create.record.text.toLowerCase()
+        return ESPRESSO_TERMS.some((term) => text.includes(term.toLowerCase()))
       })
       .map((create) => {
         // map espresso-related posts to a db row
