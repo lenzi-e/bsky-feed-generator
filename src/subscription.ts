@@ -4,7 +4,13 @@ import {
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
 
-const ESPRESSO_TERMS = ['espresso', 'doppio', 'double shot']
+const ESPRESSO_TERMS = [
+  'espresso',
+  'doppio',
+  'double shot',
+  'coffee',
+  'caffeine',
+]
 
 export class FirehoseSubscription extends FirehoseSubscriptionBase {
   async handleEvent(evt: RepoEvent) {
