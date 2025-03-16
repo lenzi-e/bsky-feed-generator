@@ -20,11 +20,16 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const postsToDelete = ops.posts.deletes.map((del) => del.uri)
     const postsToCreate = ops.posts.creates
       .filter((create) => {
-        // only alf-related posts
-        return create.record.text.toLowerCase().includes('alf')
+        // only espresso-related posts
+        create.record.text.toLowerCase().includes('espresso') ||
+          create.record.text.toLowerCase().includes('doppio') ||
+          create.record.text.toLowerCase().includes('double shot') ||
+          create.record.text.toLowerCase().includes('Café solo') ||
+          create.record.text.toLowerCase().includes('Caffè normale') ||
+          create.record.text.toLowerCase().includes('Café doble')
       })
       .map((create) => {
-        // map alf-related posts to a db row
+        // map espresso-related posts to a db row
         return {
           uri: create.uri,
           cid: create.cid,
