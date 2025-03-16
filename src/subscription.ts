@@ -21,12 +21,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const postsToCreate = ops.posts.creates
       .filter((create) => {
         // only espresso-related posts
-        create.record.text.toLowerCase().includes('espresso') ||
-          create.record.text.toLowerCase().includes('doppio') ||
-          create.record.text.toLowerCase().includes('double shot') ||
-          create.record.text.toLowerCase().includes('Café solo') ||
-          create.record.text.toLowerCase().includes('Caffè normale') ||
-          create.record.text.toLowerCase().includes('Café doble')
+        create.record.text.toLowerCase().includes('espresso')
       })
       .map((create) => {
         // map espresso-related posts to a db row
