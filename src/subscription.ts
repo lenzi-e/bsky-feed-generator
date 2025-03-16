@@ -16,15 +16,54 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     // Just for fun :)
     // Delete before actually using
     // for (const post of ops.posts.creates) {
-    //   console.log(post.record.text)
+    //   if (post.record.tags && post.record.tags.length > 0) {
+    //     console.log(post.record.tags)
+    //   }
     // }
 
     const postsToDelete = ops.posts.deletes.map((del) => del.uri)
     const postsToCreate = ops.posts.creates
       .filter((create) => {
-        // only espresso-related posts
-        const text = create.record.text.toLowerCase()
-        return ESPRESSO_TERMS.some((term) => text.includes(term.toLowerCase()))
+        // Check for espresso-related text
+        const containsEspressoText = ESPRESSO_TERMS.some((term) =>
+          create.record.text.toLowerCase().includes(term.toLowerCase()),
+        )
+
+        // Check for espresso-related tags
+        const containsEspressoTag =
+          create.record.tags &&
+          create.record.tags.some((tag) =>
+            ESPRESSO_TERMS.some((term) =>
+              tag.toLowerCase().includes(term.toLowerCase()),
+            ),
+          )
+
+        // Check for espresso-related media description (if media exists and has a description)
+        const containsEspressoInImageDesc =
+          create.record.media &&
+          // @ts-ignore
+          create.record.media.description &&
+          ESPRESSO_TERMS.some((term) =>
+            // @ts-ignore
+            create.record.media.description
+              .toLowerCase()
+              .includes(term.toLowerCase()),
+          )
+
+        // Logs for testing only
+        // if ((create.record.tags || []).length > 0) {
+        //   console.log('create.record.tags', create.record.tags)
+        // }
+        // if (Object.keys(create.record.media || {}).length > 0) {
+        //   console.log('create.record.media', create.record.media)
+        // }
+
+        // Combine all checks: text, tags, and image media
+        return (
+          containsEspressoText ||
+          containsEspressoTag ||
+          containsEspressoInImageDesc
+        )
       })
       .map((create) => {
         // map espresso-related posts to a db row
